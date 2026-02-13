@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💘</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(135deg,#ffe1f0,#ffc1dc);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  color:#4b0033;
+  overflow:hidden;
+}
+
+/* CARDS */
+.card{
+  background:rgba(255,255,255,0.4);
+  padding:25px;
+  border-radius:22px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+  animation:fadeIn 1s ease;
+  box-shadow:0 0 30px rgba(255,105,180,0.4);
+}
+
+.hidden{display:none}
+
+button{
+  padding:12px 22px;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  margin:10px;
+}
+
+#yes{background:#ff6fae;color:white}
+#no{background:#ff3f7f;color:white}
+
+/* PANDA */
+.panda{
+  font-size:90px;
+  animation:bounce 2s infinite;
+}
+
+/* ANIMATIONS */
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(0.9)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* ENVELOPE */
+.envelope{
+  width:280px;
+  height:180px;
+  background:#ffb6c1;
+  position:relative;
+  border-radius:12px;
+  margin:auto;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(255,105,180,0.6);
+}
+
+.flap{
+  position:absolute;
+  top:0;
+  width:100%;
+  height:100%;
+  background:#ff9fc9;
+  clip-path:polygon(0 0,100% 0,50% 50%);
+  transform-origin:top;
+  transition:transform 1s ease;
+}
+
+.envelope.open .flap{
+  transform:rotateX(180deg);
+}
+
+/* WAX SEAL */
+.seal{
+  width:60px;
+  height:60px;
+  background:#8b0000;
+  border-radius:50%;
+  position:absolute;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:26px;
+  box-shadow:0 0 18px rgba(255,0,0,0.8);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:translateX(-50%) scale(1)}
+  50%{transform:translateX(-50%) scale(1.15)}
+}
+
+/* LETTER */
+.letter-wrap{
+  background:#f7e7c6;
+  color:#3a1f0f;
+  padding:30px;
+  border-radius:12px;
+  font-family:'Dancing Script',cursive;
+  position:relative;
+  box-shadow:0 0 35px rgba(0,0,0,0.6);
+}
+
+.burnt{
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  box-shadow:inset 0 0 60px rgba(90,40,10,0.9);
+  pointer-events:none;
+}
+
+/* TYPING */
+.typing{
+  border-right:2px solid rgba(0,0,0,0.4);
+  white-space:pre-line;
+  animation:blink 0.8s infinite;
+}
+
+@keyframes blink{
+  50%{border-color:transparent}
+}
+
+/* HEART RAIN */
+.heart{
+  position:fixed;
+  top:-10px;
+  font-size:26px;
+  text-shadow:0 0 18px hotpink;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c6cfdc93f.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PAGE 1 -->
+<div class="card" id="page1">
+  <div class="panda" id="panda">🐼💖</div>
+  <h2>Hey Aarati…</h2>
+  <p>Will you be my Valentine? 💘</p>
+  <button id="yes">Yes 😌</button>
+  <button id="no">No 🙄</button>
+  <p id="wrongText"></p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="card hidden" id="page2">
+  <h2>Heheh 😏</h2>
+  <p>You said yes…<br>I knew you would.</p>
+  <button id="continue1">Continue 💕</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="card hidden" id="page3">
+  <h2>One last thing…</h2>
+  <p>Open this carefully 💌</p>
+  <button id="continue2">Open Envelope ✉️</button>
+</div>
+
+<!-- PAGE 4 ENVELOPE -->
+<div class="card hidden" id="page4">
+  <div class="envelope" id="envelope">
+    <div class="flap"></div>
+    <div class="seal">💌</div>
+  </div>
+</div>
+
+<!-- PAGE 5 LETTER -->
+<div class="card hidden" id="page5">
+  <div class="letter-wrap">
+    <div class="burnt"></div>
+    <div id="typed" class="typing"></div>
+  </div>
+</div>
+
+<script>
+let wrongCount=0;
+const wrongMessages=[
+  "❌ Wrong choice",
+  "❌ Wrong again",
+  "❌ Oops… wrong again",
+  "❌❌❌ Wrong wrong wrong! How can you be so wrong, duffer? Just click YES now 😌"
+];
+
+const noBtn=document.getElementById("no");
+const yesBtn=document.getElementById("yes");
+const wrongText=document.getElementById("wrongText");
+const panda=document.getElementById("panda");
+
+noBtn.onclick=()=>{
+  if(wrongCount<wrongMessages.length){
+    wrongText.innerHTML=wrongMessages[wrongCount];
+    wrongCount++;
+  }
+  if(wrongCount===4){
+    noBtn.style.display="none";
+    panda.innerHTML="🐼💔";
+  }
+};
+
+yesBtn.onclick=()=>{
+  page1.classList.add("hidden");
+  page2.classList.remove("hidden");
+  music.play();
+  hearts();
+};
+
+continue1.onclick=()=>{
+  page2.classList.add("hidden");
+  page3.classList.remove("hidden");
+};
+
+continue2.onclick=()=>{
+  page3.classList.add("hidden");
+  page4.classList.remove("hidden");
+};
+
+document.getElementById("envelope").onclick=()=>{
+  envelope.classList.add("open");
+  setTimeout(()=>{
+    page4.classList.add("hidden");
+    page5.classList.remove("hidden");
+    typeLetter();
+  },1200);
+};
+
+function typeLetter(){
+const text=`My love,
+
+This is our first Valentine’s Day, and I want you to know—
+I didn’t fall for beauty. Beauty fades.
+I fell for your kind soul, and that never does.
+
+Your eyes are dangerous in the best way—
+like the Bermuda Triangle.
+One look, and I’m lost…
+and I don’t even want to be found.
+
+The more time we’ve spent together,
+the closer you’ve settled into my heart.
+You are like the ocean—
+calm, deep, and worth drowning in.
+
+I didn’t choose you out of habit or loneliness.
+I chose you because my heart felt peace with you.
+
+If the world changes, let it.
+I’ll still choose you—
+quietly, honestly, always.
+
+— Ebadd 💖`;
+
+let i=0;
+const t=document.getElementById("typed");
+const typer=setInterval(()=>{
+  t.innerHTML+=text.charAt(i);
+  i++;
+  if(i>=text.length) clearInterval(typer);
+},40);
+}
+
+function hearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(Math.random()*3+2)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },250);
+}
+</script>
+
+</body>
+</html>
