@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Valentine 💘</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
@@ -22,7 +22,7 @@ body{
 }
 
 .card{
-  background:rgba(255,255,255,0.4);
+  background:rgba(255,255,255,0.45);
   padding:25px;
   border-radius:22px;
   width:90%;
@@ -61,6 +61,7 @@ button{
   to{opacity:1;transform:scale(1)}
 }
 
+/* Envelope */
 .envelope{
   width:280px;
   height:180px;
@@ -78,7 +79,7 @@ button{
   width:100%;
   height:100%;
   background:#ff9fc9;
-  clip-path:polygon(0 0,100% 0,50% 50%);
+  clip-path:polygon(0 0,100% 0,50% 55%);
   transform-origin:top;
   transition:transform 1s ease;
 }
@@ -102,53 +103,28 @@ button{
   color:white;
   font-size:26px;
   box-shadow:0 0 18px rgba(255,0,0,0.8);
-  animation:pulse 2s infinite;
 }
 
-@keyframes pulse{
-  0%,100%{transform:translateX(-50%) scale(1)}
-  50%{transform:translateX(-50%) scale(1.15)}
-}
-
+/* Letter */
 .letter-wrap{
   background:#f7e7c6;
   color:#3a1f0f;
   padding:30px;
   border-radius:12px;
   font-family:'Dancing Script',cursive;
-  position:relative;
   box-shadow:0 0 35px rgba(0,0,0,0.6);
 }
 
-.burnt{
-  position:absolute;
-  inset:0;
-  border-radius:12px;
-  box-shadow:inset 0 0 60px rgba(90,40,10,0.9);
-  pointer-events:none;
-}
-
-.typing{
-  border-right:2px solid rgba(0,0,0,0.4);
+#typed{
   white-space:pre-line;
-  animation:blink 0.8s infinite;
+  font-size:20px;
 }
 
-@keyframes blink{
-  50%{border-color:transparent}
-}
-
-.choice-text{
-  margin-top:15px;
-  font-family:'Special Elite',cursive;
-  color:#6b002f;
-}
-
+/* Hearts */
 .heart{
   position:fixed;
   top:-10px;
   font-size:26px;
-  text-shadow:0 0 18px hotpink;
   animation:fall linear forwards;
 }
 
@@ -161,11 +137,12 @@ button{
 <body>
 
 <audio id="music" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c6cfdc93f.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c6cfdc93f.mp3">
 </audio>
 
+<!-- PAGE 1 -->
 <div class="card" id="page1">
-  <div class="panda" id="panda">🐼💖</div>
+  <div class="panda">🐼💖</div>
   <h2>Hey Aarati…</h2>
   <p>Will you be my Valentine? 💘</p>
   <button id="yes">Yes 😌</button>
@@ -173,18 +150,20 @@ button{
   <p id="wrongText"></p>
 </div>
 
+<!-- PAGE 2 -->
 <div class="card hidden" id="page2">
   <h2>Heheh 😏</h2>
-  <p>You said yes…<br>I knew you would.</p>
+  <p>I knew you’d say yes.</p>
   <button id="continue1">Continue 💕</button>
 </div>
 
+<!-- PAGE 3 -->
 <div class="card hidden" id="page3">
-  <h2>One last thing…</h2>
-  <p>Open this carefully 💌</p>
+  <h2>Something for you…</h2>
   <button id="continue2">Open Envelope ✉️</button>
 </div>
 
+<!-- PAGE 4 -->
 <div class="card hidden" id="page4">
   <div class="envelope" id="envelope">
     <div class="flap"></div>
@@ -192,18 +171,23 @@ button{
   </div>
 </div>
 
+<!-- PAGE 5 -->
 <div class="card hidden" id="page5">
   <div class="letter-wrap">
-    <div class="burnt"></div>
-    <div id="easter" class="choice-text"></div>
-    <div id="typed" class="typing"></div>
-    <div id="choices" class="hidden">
-      <p class="choice-text">So… what now?</p>
-      <button onclick="restart()">Stay forever 💖</button>
-      <button onclick="restart()">Read again 😌</button>
-      <p class="choice-text">See? No escape.</p>
-    </div>
+    <div id="typed"></div>
   </div>
+  <button id="continue3">One more thing… 💞</button>
+</div>
+
+<!-- PAGE 6 -->
+<div class="card hidden" id="page6">
+  <h2>Forever Starts Here 💖</h2>
+  <p>
+    No matter where life takes us,<br>
+    this choice stays the same.<br><br>
+    Today. Tomorrow. Always.
+  </p>
+  <h3>— Yours, forever 😌</h3>
 </div>
 
 <script>
@@ -212,26 +196,16 @@ const wrongMessages=[
   "❌ Wrong choice",
   "❌ Wrong again",
   "❌ Oops… wrong again",
-  "❌❌❌ Wrong wrong wrong! How can you be so wrong, duffer? Just click YES now 😌🔪"
+  "❌❌❌ Wrong wrong wrong! Just click YES 😌"
 ];
 
-const noBtn=document.getElementById("no");
-const yesBtn=document.getElementById("yes");
-const wrongText=document.getElementById("wrongText");
-const panda=document.getElementById("panda");
-
-noBtn.onclick=()=>{
-  if(wrongCount<wrongMessages.length){
-    wrongText.innerHTML=wrongMessages[wrongCount];
-    wrongCount++;
-  }
-  if(wrongCount===4){
-    noBtn.style.display="none";
-    panda.innerHTML="🐼💔";
-  }
+no.onclick=()=>{
+  wrongText.textContent=wrongMessages[wrongCount] || "";
+  wrongCount++;
+  if(wrongCount>=4) no.style.display="none";
 };
 
-yesBtn.onclick=()=>{
+yes.onclick=()=>{
   page1.classList.add("hidden");
   page2.classList.remove("hidden");
   music.play();
@@ -254,65 +228,54 @@ envelope.onclick=()=>{
     page4.classList.add("hidden");
     page5.classList.remove("hidden");
     typeLetter();
-  },1200);
+  },1000);
+};
+
+continue3.onclick=()=>{
+  page5.classList.add("hidden");
+  page6.classList.remove("hidden");
 };
 
 function typeLetter(){
-  const t=document.getElementById("typed");
-  const easter=document.getElementById("easter");
+const text =
+`My love,
 
-  if(localStorage.getItem("visited")){
-    easter.innerText="You came back? Yeah… I knew you would.";
-  }
-  localStorage.setItem("visited","yes");
+This is our first Valentine’s Day,
+and I want you to know—
+I didn’t fall for beauty.
+I fell for your kind soul.
 
-  const text=`My love,
+Your eyes are dangerous in the best way.
+One look, and I’m lost—
+and I don’t want to be found.
 
-This is our first Valentine’s Day, and I want you to know—
-I didn’t fall for beauty. Beauty fades.
-I fell for your kind soul, and that never does.
-
-Your eyes are dangerous in the best way—
-like the Bermuda Triangle.
-One look, and I’m lost…
-and I don’t even want to be found.
-
-The more time we’ve spent together,
-the closer you’ve settled into my heart.
-You are like the ocean—
-calm, deep, and worth drowning in.
+I didn’t choose you out of habit.
+I chose you because my heart felt peace.
 
 If the world changes, let it.
-I’ll still choose you—
-quietly, honestly, always.
+I’ll still choose you.
 
-— Ebadd (your forever daddy) 💖`;
+— Ebadd 💖`;
 
-  let i=0;
-  const typer=setInterval(()=>{
-    t.innerHTML+=text.charAt(i);
-    i++;
-    if(i>=text.length){
-      clearInterval(typer);
-      document.getElementById("choices").classList.remove("hidden");
-    }
-  },40);
-}
-
-function restart(){
-  location.reload();
+let i=0;
+const t=document.getElementById("typed");
+const typer=setInterval(()=>{
+  t.textContent += text[i];
+  i++;
+  if(i>=text.length) clearInterval(typer);
+},40);
 }
 
 function hearts(){
   setInterval(()=>{
     const h=document.createElement("div");
     h.className="heart";
-    h.innerHTML="💖";
+    h.textContent="💖";
     h.style.left=Math.random()*100+"vw";
     h.style.animationDuration=(Math.random()*3+2)+"s";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),5000);
-  },250);
+  },300);
 }
 </script>
 
