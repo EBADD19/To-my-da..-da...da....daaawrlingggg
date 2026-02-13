@@ -21,7 +21,6 @@ body{
   overflow:hidden;
 }
 
-/* CARDS */
 .card{
   background:rgba(255,255,255,0.4);
   padding:25px;
@@ -47,13 +46,11 @@ button{
 #yes{background:#ff6fae;color:white}
 #no{background:#ff3f7f;color:white}
 
-/* PANDA */
 .panda{
   font-size:90px;
   animation:bounce 2s infinite;
 }
 
-/* ANIMATIONS */
 @keyframes bounce{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-12px)}
@@ -64,7 +61,6 @@ button{
   to{opacity:1;transform:scale(1)}
 }
 
-/* ENVELOPE */
 .envelope{
   width:280px;
   height:180px;
@@ -91,7 +87,6 @@ button{
   transform:rotateX(180deg);
 }
 
-/* WAX SEAL */
 .seal{
   width:60px;
   height:60px;
@@ -115,7 +110,6 @@ button{
   50%{transform:translateX(-50%) scale(1.15)}
 }
 
-/* LETTER */
 .letter-wrap{
   background:#f7e7c6;
   color:#3a1f0f;
@@ -134,7 +128,6 @@ button{
   pointer-events:none;
 }
 
-/* TYPING */
 .typing{
   border-right:2px solid rgba(0,0,0,0.4);
   white-space:pre-line;
@@ -145,7 +138,12 @@ button{
   50%{border-color:transparent}
 }
 
-/* HEART RAIN */
+.choice-text{
+  margin-top:15px;
+  font-family:'Special Elite',cursive;
+  color:#6b002f;
+}
+
 .heart{
   position:fixed;
   top:-10px;
@@ -166,7 +164,6 @@ button{
   <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c6cfdc93f.mp3" type="audio/mpeg">
 </audio>
 
-<!-- PAGE 1 -->
 <div class="card" id="page1">
   <div class="panda" id="panda">🐼💖</div>
   <h2>Hey Aarati…</h2>
@@ -176,21 +173,18 @@ button{
   <p id="wrongText"></p>
 </div>
 
-<!-- PAGE 2 -->
 <div class="card hidden" id="page2">
   <h2>Heheh 😏</h2>
   <p>You said yes…<br>I knew you would.</p>
   <button id="continue1">Continue 💕</button>
 </div>
 
-<!-- PAGE 3 -->
 <div class="card hidden" id="page3">
   <h2>One last thing…</h2>
   <p>Open this carefully 💌</p>
   <button id="continue2">Open Envelope ✉️</button>
 </div>
 
-<!-- PAGE 4 ENVELOPE -->
 <div class="card hidden" id="page4">
   <div class="envelope" id="envelope">
     <div class="flap"></div>
@@ -198,11 +192,17 @@ button{
   </div>
 </div>
 
-<!-- PAGE 5 LETTER -->
 <div class="card hidden" id="page5">
   <div class="letter-wrap">
     <div class="burnt"></div>
+    <div id="easter" class="choice-text"></div>
     <div id="typed" class="typing"></div>
+    <div id="choices" class="hidden">
+      <p class="choice-text">So… what now?</p>
+      <button onclick="restart()">Stay forever 💖</button>
+      <button onclick="restart()">Read again 😌</button>
+      <p class="choice-text">See? No escape.</p>
+    </div>
   </div>
 </div>
 
@@ -212,7 +212,7 @@ const wrongMessages=[
   "❌ Wrong choice",
   "❌ Wrong again",
   "❌ Oops… wrong again",
-  "❌❌❌ Wrong wrong wrong! How can you be so wrong, duffer? Just click YES now 😌"
+  "❌❌❌ Wrong wrong wrong! How can you be so wrong, duffer? Just click YES now 😌🔪"
 ];
 
 const noBtn=document.getElementById("no");
@@ -248,7 +248,7 @@ continue2.onclick=()=>{
   page4.classList.remove("hidden");
 };
 
-document.getElementById("envelope").onclick=()=>{
+envelope.onclick=()=>{
   envelope.classList.add("open");
   setTimeout(()=>{
     page4.classList.add("hidden");
@@ -258,7 +258,15 @@ document.getElementById("envelope").onclick=()=>{
 };
 
 function typeLetter(){
-const text=`My love,
+  const t=document.getElementById("typed");
+  const easter=document.getElementById("easter");
+
+  if(localStorage.getItem("visited")){
+    easter.innerText="You came back? Yeah… I knew you would.";
+  }
+  localStorage.setItem("visited","yes");
+
+  const text=`My love,
 
 This is our first Valentine’s Day, and I want you to know—
 I didn’t fall for beauty. Beauty fades.
@@ -274,22 +282,25 @@ the closer you’ve settled into my heart.
 You are like the ocean—
 calm, deep, and worth drowning in.
 
-I didn’t choose you out of habit or loneliness.
-I chose you because my heart felt peace with you.
-
 If the world changes, let it.
 I’ll still choose you—
 quietly, honestly, always.
 
-— Ebadd 💖`;
+— Ebadd (your forever daddy) 💖`;
 
-let i=0;
-const t=document.getElementById("typed");
-const typer=setInterval(()=>{
-  t.innerHTML+=text.charAt(i);
-  i++;
-  if(i>=text.length) clearInterval(typer);
-},40);
+  let i=0;
+  const typer=setInterval(()=>{
+    t.innerHTML+=text.charAt(i);
+    i++;
+    if(i>=text.length){
+      clearInterval(typer);
+      document.getElementById("choices").classList.remove("hidden");
+    }
+  },40);
+}
+
+function restart(){
+  location.reload();
 }
 
 function hearts(){
